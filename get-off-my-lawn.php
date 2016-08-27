@@ -4,7 +4,7 @@
  * Plugin Name: Get Off My Lawn
  * Plugin URI: http://clarknikdelpowell.com
  * Description: A plugin to keep "Discourage search engines from indexing this site" set to true.
- * Version: 1.3
+ * Version: 1.3.1
  * Author: Glenn Welser
  * Author URI: hhttp://clarknikdelpowell.com/agency/people/glenn
  * License: GPL2
@@ -26,6 +26,11 @@
  */
 class Get_Off_My_Lawn {
 
+	/**
+	 * Setup WordPress hooks.
+	 *
+	 * @since 1.3.0
+	 */
 	public function run() {
 
 		add_action( 'init', array( $this, 'discourage_se' ) );
@@ -33,12 +38,25 @@ class Get_Off_My_Lawn {
 
 	}
 
+	/**
+	 * Force Discourage Search Engines to true.
+	 *
+	 * @since 1.0.0
+	 */
 	public function discourage_se() {
 
-		update_option( 'blog_public', 0 );
+		$blog_public = get_option( 'blog_public' );
+		if ( $blog_public ) {
+			update_option( 'blog_public', 0 );
+		}
 
 	}
 
+	/**
+	 * Show a notice in the admin.
+	 *
+	 * @since 1.2.0
+	 */
 	public function admin_notice() {
 
 		$class   = 'notice notice-warning';
