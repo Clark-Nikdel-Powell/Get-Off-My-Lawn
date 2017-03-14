@@ -4,7 +4,7 @@
  * Plugin Name: Get Off My Lawn
  * Plugin URI: http://clarknikdelpowell.com
  * Description: A plugin to keep "Discourage search engines from indexing this site" set to true.
- * Version: 1.3.1
+ * Version: 2.0.0
  * Author: Glenn Welser
  * Author URI: hhttp://clarknikdelpowell.com/agency/people/glenn
  * License: GPL2
@@ -27,26 +27,52 @@
 class Get_Off_My_Lawn {
 
 	/**
+	 * Url of live, public site
+	 *
+	 * @var string
+	 *
+	 * @since 2.0.0
+	 */
+	private $live_url = '';
+
+	/**
 	 * Setup WordPress hooks.
 	 *
 	 * @since 1.3.0
 	 */
 	public function run() {
 
-		add_action( 'init', array( $this, 'discourage_se' ) );
+		add_action( 'init', array( $this, 'set_robot_permissions' ) );
 		add_action( 'admin_notices', array( $this, 'admin_notice' ) );
 
 	}
 
 	/**
-	 * Force Discourage Search Engines to true.
+	 * Get site url without scheme
 	 *
-	 * @since 1.0.0
+	 * @return string
+	 *
+	 * @since 2.0.0
 	 */
-	public function discourage_se() {
+	private function no_scheme_url() {
 
-		$blog_public = get_option( 'blog_public' );
-		if ( $blog_public ) {
+		$site_url = site_url();
+		$site_url = str_replace( 'https://', '', $site_url );
+		$site_url = str_replace( 'http://', '', $site_url );
+
+		return $site_url;
+	}
+
+	/**
+	 * Set blog_public based on site url
+	 *
+	 * @since 2.0.0
+	 */
+	public function set_robot_permissions() {
+
+		if ( $this->no_scheme_url() === $this->live_url ) {
+			update_option( 'blog_public', 1 );
+		} else {
 			update_option( 'blog_public', 0 );
 		}
 
@@ -59,8 +85,34 @@ class Get_Off_My_Lawn {
 	 */
 	public function admin_notice() {
 
-		$class   = 'notice notice-warning';
-		$message = __( 'Sad robot is sad! Search engines are being discouraged!', 'get-off-my-lawn' );
+		if ( get_option( 'blog_public' ) ) {
+
+			$class = 'notice notice-info';
+
+			$message = sprintf( '<strong>%1$s</strong> %2$s %3$s',
+				__( 'Robots are allowed!', 'get-off-my-lawn' ),
+				__( 'The blog is public!', 'get-off-my-lawn' ),
+				__( 'The current site url matches the live url.', 'get-off-my-lawn' )
+			);
+
+		} else {
+
+			$class = 'notice notice-error';
+
+			$message = sprintf( '<strong>%1$s</strong> %2$s %3$s',
+				__( 'Robots not allowed!', 'get-off-my-lawn' ),
+				__( 'Search engines are being discouraged!', 'get-off-my-lawn' ),
+				__( 'The current site url does not match the live url.', 'get-off-my-lawn' )
+			);
+
+		}
+
+		$message .= sprintf( '<br>%1$s: <b>%2$s</b> %3$s: <b>%4$s</b>',
+			__( 'Current url', 'get-off-my-lawn' ),
+			$this->no_scheme_url(),
+			__( 'Live url', 'get-off-my-lawn' ),
+			$this->live_url
+		);
 
 		printf( '<div class="%1$s"><p>%2$s</p></div>', $class, $message );
 
