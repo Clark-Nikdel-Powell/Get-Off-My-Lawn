@@ -7,4 +7,4 @@ If the site's current url matches the `live_url` property defined in the plugin 
 ##Usage
 
 1. Edit the `public_url` setting on line 36.
-1. Upload the plugin file to `mu=plugins`.
+1. Upload the plugin file to `mu_plugins`.
