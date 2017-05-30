@@ -2,14 +2,14 @@
 
 /**
  * Plugin Name: Get Off My Lawn
- * Plugin URI: http://clarknikdelpowell.com
+ * Plugin URI: https://cnpagency.com
  * Description: A plugin to keep "Discourage search engines from indexing this site" set to true.
  * Version: 2.0.0
  * Author: Glenn Welser
- * Author URI: hhttp://clarknikdelpowell.com/agency/people/glenn
+ * Author URI: https://cnpagency.com/people/glenn/
  * License: GPL2
  *
- * Copyright (C) 2014  Glenn Welser  glenn@clarknikdelpowell.com
+ * Copyright (C) 2014  Glenn Welser  glenn@cnpagency.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License, version 2, as
@@ -27,7 +27,7 @@
 class Get_Off_My_Lawn {
 
 	/**
-	 * Url of live, public site
+	 * Url of live, public site, sans-protocol and slashes.
 	 *
 	 * @var string
 	 *
@@ -97,7 +97,7 @@ class Get_Off_My_Lawn {
 
 		} else {
 
-			$class = 'notice notice-error';
+			$class = 'notice notice-warning';
 
 			$message = sprintf( '<strong>%1$s</strong> %2$s %3$s',
 				__( 'Robots not allowed!', 'get-off-my-lawn' ),
